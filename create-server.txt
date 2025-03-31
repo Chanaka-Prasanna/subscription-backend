@@ -1,0 +1,7 @@
+npx express-generator --no-view --git ./
+
+
+packages:
+
+1. nodemon
+2. eslint - npx eslint --init
