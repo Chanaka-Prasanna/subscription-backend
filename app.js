@@ -14,13 +14,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/uses", userRouter);
+app.use("/api/v1/users", userRouter);
 app.use("/api/v1/subsriptions", subscriptionRouter);
 
 app.use(errorMiddleware);
 
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send("Wellcome to the API");
 });
 
 app.listen(PORT, async () => {
