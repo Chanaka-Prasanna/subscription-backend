@@ -13,11 +13,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(archjetMiddleware);
+// app.use(archjetMiddleware);
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/subsriptions", subscriptionRouter);
+app.use("/api/v1/subscriptions", subscriptionRouter);
 
 app.use(errorMiddleware);
 
