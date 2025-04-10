@@ -1,0 +1,3 @@
+work flows -  upstash
+
+npx @upstash/qstash-cli dev
