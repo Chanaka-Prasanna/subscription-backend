@@ -72,6 +72,9 @@ const subscriptionSchema = new mongoose.Schema({
     required: true,
     index: true,
   },
+  workflowId: {
+    type: String,
+  },
 });
 
 subscriptionSchema.pre("save", function (next) {

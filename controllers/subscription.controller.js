@@ -20,6 +20,9 @@ export const createSubscription = async (req, res, next) => {
       retries: 0,
     });
 
+    subscription.workflowId = workflowRunId;
+    await subscription.save();
+
     res
       .status(201)
       .json({ success: true, data: { subscription, workflowRunId } });
@@ -42,5 +45,60 @@ export const getUserSubscriptions = async (req, res, next) => {
     res.status(200).json({ success: true, data: subscriptions });
   } catch (e) {
     next(e);
+  }
+};
+
+export const getSubscriptionDetails = async (req, res, next) => {
+  {
+    try {
+      const details = await Subscription.findById(req.params.id)
+        .populate("user", "name email")
+        .lean();
+
+      if (!details) {
+        const error = new Error("Subscription does not exists");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      res.status(200).json({ success: true, data: details });
+    } catch (error) {
+      next(error);
+    }
+  }
+};
+export const getAllSubscriptions = async (req, res, next) => {
+  try {
+    const subscriptions = await Subscription.find();
+    res.status(200).json({ success: true, data: subscriptions });
+  } catch (error) {
+    next(error);
+  }
+};
+export const deleteSubscription = async (req, res, next) => {
+  const subscription = await Subscription.findByIdAndDelete(req.params.id);
+  if (!subscription) {
+    const error = new Error("Subscription does not exists");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  try {
+    const upstashRessponse = await workflowClient.cancel({
+      ids: subscription.workflowId,
+    });
+    if (upstashRessponse.error) {
+      const error = new Error("Error cancelling subscription workflow");
+      error.statusCode = 500;
+      throw error;
+    }
+
+    console.log("Subscription workflow cancelled", upstashRessponse);
+    res.status(300).json({
+      success: true,
+      message: "Subscription has been deleted",
+    });
+  } catch (error) {
+    next(error);
   }
 };
